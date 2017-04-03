@@ -18,7 +18,7 @@ Primeiramente é necessário que o database do PetBooking esteja criado e tenha 
 É possível criar apenas o banco local sem precisar da aplicação inteira do PetBooking.
 Par isso, siga os seguintes comandos (e peça a outro desenvolvedor um DUMP atual)
 
-1. Criando o database standalone (abra o terminal do PostgreSQL):
+1 - Criando o database standalone (abra o terminal do PostgreSQL):
 
 No Terminal do PostgreSQL:
 
@@ -27,10 +27,16 @@ CREATE DATABASE petbooking_development;
 \q (para sair)
 ```
 
-2. Suba o dump de dados com o comando (terminal padrão do seu computador)
+2 - Suba o dump de dados com o comando (terminal padrão do seu computador)
 
 ```
 pg_restore --verbose --clean --no-acl --no-owner -h localhost -d petbooking_development ~/caminho/do/dump
+```
+
+3 - Configure o Local Tunnel (utilizado para acessar o app em dev de fora da sua rede)
+
+```
+npm -g install localtunnel
 ```
 
 ## Variáveis de Ambiente
@@ -55,6 +61,12 @@ No Terminal:
 
 ```
 bin/rails server
+```
+
+Abra outra aba do Terminal e abra o [LocalTunnel](https://github.com/localtunnel/localtunnel)
+
+```
+lt --port 3000 (ou a porta atual do seu server Rails)
 ```
 
 ## Abrindo novos PRs
