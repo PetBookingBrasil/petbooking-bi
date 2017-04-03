@@ -8,6 +8,7 @@ Rails.application.routes.draw do
           get 'active_today'
           get 'total_since_launch'
           get 'active_current_month'
+          get 'passive_current_month'
         end
       end
     end
