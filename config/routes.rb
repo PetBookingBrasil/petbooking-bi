@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
       resources :users do
         collection do
+          get 'active_today'
           get 'total_since_launch'
         end
       end
