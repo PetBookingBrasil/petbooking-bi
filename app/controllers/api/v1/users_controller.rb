@@ -21,4 +21,12 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     render json: { today: today, average: average }
   end
+
+  def active_current_month
+    date = Date.today
+    total = User.active.count
+    month = User.between(date.beginning_of_month, date.end_of_month).count
+
+    render json: { total: total, month: month }
+  end
 end
