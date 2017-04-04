@@ -11,6 +11,12 @@ Rails.application.routes.draw do
           get 'passive_current_month'
         end
       end
+
+      resources :businesses do
+        collection do
+          get 'active_current_month'
+        end
+      end
     end
   end
 end
