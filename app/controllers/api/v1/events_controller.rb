@@ -20,4 +20,19 @@ class Api::V1::EventsController < Api::V1::BaseController
 
     render json: { online: online_hash, offline: offline_hash }, status: :ok
   end
+
+  def total_last_semester
+    total = Event.count
+    months = []
+
+    6.times do |index|
+      date  = Date.today - index.month
+      month = Date::MONTHNAMES[date.month]
+      count = Event.between(date.beginning_of_month, date.end_of_month).count
+      # build a hash with months and their values
+      months << { month: month, count: count }
+    end
+
+    render json: { total: total, months: months }, status: :ok
+  end
 end

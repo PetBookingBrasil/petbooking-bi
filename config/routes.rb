@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       resources :events do
         collection do
           get 'today_and_average'
+          get 'total_last_semester'
         end
       end
     end
