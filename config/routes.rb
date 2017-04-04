@@ -15,8 +15,8 @@ Rails.application.routes.draw do
       resources :businesses do
         collection do
           get 'sign_up_progress'
+          get 'total_last_semester'
           get 'active_current_month'
-          get 'active_last_semester'
         end
       end
     end

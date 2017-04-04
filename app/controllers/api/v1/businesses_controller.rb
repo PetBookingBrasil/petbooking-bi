@@ -7,13 +7,13 @@ class Api::V1::BusinessesController < Api::V1::BaseController
     render json: { total: total, month: month }, status: :ok
   end
 
-  def active_last_semester
+  def total_last_semester
     date       = Date.today
     end_date   = date.end_of_month
     start_date = date.beginning_of_month
 
-    total   = Business.active.between(start_date, end_date).count
-    average = Business.active.between(start_date - 6.months, end_date - 1.month).count / 6
+    total   = Business.between(start_date, end_date).count
+    average = Business.between(start_date - 6.months, end_date - 1.month).count / 6
 
     render json: { total: total, average: average }, status: :ok
   end
