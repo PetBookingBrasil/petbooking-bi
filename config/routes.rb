@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       resources :sales_orders, path: 'sales' do
         collection do
           get 'today'
+          get 'total_last_year'
         end
       end
     end

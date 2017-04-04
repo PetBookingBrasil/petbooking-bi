@@ -1,5 +1,5 @@
 class SalesOrder < ApplicationRecord
-  AASM_STATES = { cancelled: 0, open: 1, payment: 2, paid: 1 }
+  AASM_STATES = { cancelled: 0, open: 1, payment: 2, paid: 3 }
 
   has_many :sales_items, dependent: :destroy
 
