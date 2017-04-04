@@ -17,4 +17,17 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
     render json: { total: total, average: average }, status: :ok
   end
+
+  def sign_up_progress
+    results = []
+
+    Business::AASM_STATES.each do |state|
+      results << {
+        step: state[0],
+        count: Business.imported(false).by_step(state[1]).count
+      }
+    end
+
+    render json: { steps: results }, status: :ok
+  end
 end

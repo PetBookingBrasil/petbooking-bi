@@ -15,4 +15,8 @@ class Business < ApplicationRecord
   scope :imported, -> (boolean) {
     where('imported = ?', boolean)
   }
+
+  scope :by_step, -> (step) {
+    where(aasm_state: step)
+  }
 end
