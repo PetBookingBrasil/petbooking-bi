@@ -19,6 +19,12 @@ Rails.application.routes.draw do
           get 'active_current_month'
         end
       end
+
+      resources :events do
+        collection do
+          get 'today_and_average'
+        end
+      end
     end
   end
 end
