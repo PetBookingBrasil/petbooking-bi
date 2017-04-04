@@ -26,6 +26,12 @@ Rails.application.routes.draw do
           get 'total_last_semester'
         end
       end
+
+      resources :sales_orders, path: 'sales' do
+        collection do
+          get 'today'
+        end
+      end
     end
   end
 end
