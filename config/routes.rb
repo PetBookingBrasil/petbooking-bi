@@ -34,6 +34,12 @@ Rails.application.routes.draw do
           get 'total_last_year'
         end
       end
+
+      resources :employments do
+        collection do
+          get 'top_three_employees'
+        end
+      end
     end
   end
 end
