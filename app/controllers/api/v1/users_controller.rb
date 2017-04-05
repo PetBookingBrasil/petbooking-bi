@@ -27,13 +27,15 @@ class Api::V1::UsersController < Api::V1::BaseController
     SalesOrder.joins(:sales_items)
               .where(aasm_state: 3)
               .select('sales_orders.clientship_id,
-                       SUM(coalesce(sales_items.paid_price, 0)) AS total_paid')
+                       SUM(coalesce(sales_items.paid_price, 0)) AS total_paid,
+                       COUNT(coalesce(sales_items.id)) AS total_events')
               .group('sales_orders.clientship_id')
               .order('total_paid desc')
               .limit(3).map do |row|
                 if user = User.find(row.clientship_id)
                   users << {
                     name: user.name,
+                    purchases: row.total_events,
                     address: user.city,
                     total: row.total_paid.to_f
                   }
