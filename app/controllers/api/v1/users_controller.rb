@@ -22,6 +22,27 @@ class Api::V1::UsersController < Api::V1::BaseController
     render json: { today: today, average: average }, status: :ok
   end
 
+  def top_three_customers
+    users = []
+    SalesOrder.joins(:sales_items)
+              .where(aasm_state: 3)
+              .select('sales_orders.clientship_id,
+                       SUM(coalesce(sales_items.paid_price, 0)) AS total_paid')
+              .group('sales_orders.clientship_id')
+              .order('total_paid desc')
+              .limit(3).map do |row|
+                if user = User.find(row.clientship_id)
+                  users << {
+                    name: user.name,
+                    address: user.city,
+                    total: row.total_paid.to_f
+                  }
+                end
+              end
+
+    render json: { users: users }, status: :ok
+  end
+
   def active_current_month
     date = Date.today
     total = User.active.count
