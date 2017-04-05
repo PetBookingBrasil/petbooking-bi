@@ -7,6 +7,7 @@ Rails.application.routes.draw do
         collection do
           get 'active_today'
           get 'total_since_launch'
+          get 'top_three_customers'
           get 'active_current_month'
           get 'passive_current_month'
         end
