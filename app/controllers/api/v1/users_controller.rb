@@ -32,7 +32,7 @@ class Api::V1::UsersController < Api::V1::BaseController
               .group('sales_orders.clientship_id')
               .order('total_paid desc')
               .limit(3).map do |row|
-                if user = User.find(row.clientship_id)
+                if user = User.find_by(id: row.clientship_id)
                   users << {
                     name: user.name,
                     purchases: row.total_events,
