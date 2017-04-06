@@ -74,7 +74,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Now use the partial value calculated to build "Others" service amount
     services << { service: 'Outros', total: (total_in_services - top_10_amount).to_f }
 
-    render json: services, status: :ok
+    render json: { services: services }, status: :ok
   end
 
   def top_offline_services
@@ -103,6 +103,6 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Now use the partial value calculated to build "Others" service amount
     services << { service: 'Outros', total: (total_in_services - top_10_amount).to_f }
 
-    render json: services, status: :ok
+    render json: { services: services }, status: :ok
   end
 end
