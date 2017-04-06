@@ -79,6 +79,14 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
 
   def top_offline_services
     services = []
+    top_10_amount = 0
+    # Calculate the total amount paid for services
+    total_in_services = SalesOrder.joins(:sales_items)
+                        .paid
+                        .online(false)
+                        .pluck('sales_items.unit_price').sum.to_f
+
+    # Now calculate the Top 10
     SalesOrder.joins(:sales_items)
               .online(false)
               .paid
@@ -88,8 +96,12 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
               .order('sales_item_total DESC')
               .limit(10)
               .each do |row|
-                services << { service: row.name, total: row.sales_item_total }
+                top_10_amount += row.sales_item_total
+                services << { service: row.name, total: row.sales_item_total.to_f }
               end
+
+    # Now use the partial value calculated to build "Others" service amount
+    services << { service: 'Outros', total: (total_in_services - top_10_amount).to_f }
 
     render json: services, status: :ok
   end
