@@ -64,4 +64,21 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
 
     render json: services, status: :ok
   end
+
+  def top_offline_services
+    services = []
+    SalesOrder.joins(:sales_items)
+              .online(false)
+              .paid
+              .select('sales_items.name,
+                       SUM(coalesce(sales_items.paid_price, 0)) AS sales_item_total')
+              .group('sales_items.name')
+              .order('sales_item_total DESC')
+              .limit(10)
+              .each do |row|
+                services << { service: row.name, total: row.sales_item_total }
+              end
+
+    render json: services, status: :ok
+  end
 end

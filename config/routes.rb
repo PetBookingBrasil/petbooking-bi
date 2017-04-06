@@ -33,6 +33,7 @@ Rails.application.routes.draw do
           get 'today'
           get 'total_last_year'
           get 'top_online_services'
+          get 'top_offline_services'
         end
       end
 
