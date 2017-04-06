@@ -25,7 +25,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def top_three_customers
     users = []
     SalesOrder.joins(:sales_items)
-              .where(aasm_state: 3)
+              .paid
               .select('sales_orders.clientship_id,
                        SUM(coalesce(sales_items.paid_price, 0)) AS total_paid,
                        COUNT(coalesce(sales_items.id)) AS total_events')
