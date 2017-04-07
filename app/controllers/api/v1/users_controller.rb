@@ -23,9 +23,12 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def top_three_customers
+    date  = Date.today - 1.day
     users = []
+
     SalesOrder.joins(:sales_items, :clientship)
               .paid
+              .between(date - 30.days, date)
               .select('clientships.user_id,
                        SUM(coalesce(sales_items.paid_price, 0)) AS total_paid,
                        COUNT(coalesce(sales_items.id)) AS total_events')
