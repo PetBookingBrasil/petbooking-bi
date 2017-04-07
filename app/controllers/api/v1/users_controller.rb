@@ -24,15 +24,15 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def top_three_customers
     users = []
-    SalesOrder.joins(:sales_items)
+    SalesOrder.joins(:sales_items, :clientship)
               .paid
-              .select('sales_orders.clientship_id,
+              .select('clientships.user_id,
                        SUM(coalesce(sales_items.paid_price, 0)) AS total_paid,
                        COUNT(coalesce(sales_items.id)) AS total_events')
-              .group('sales_orders.clientship_id')
+              .group('clientships.user_id')
               .order('total_paid desc')
               .limit(10).map do |row|
-                if user = User.find_by(id: row.clientship_id)
+                if user = User.find_by(id: row.user_id)
                   users << {
                     name: user.name,
                     purchases: row.total_events,

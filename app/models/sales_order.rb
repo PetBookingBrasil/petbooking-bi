@@ -1,6 +1,7 @@
 class SalesOrder < ApplicationRecord
   AASM_STATES = { cancelled: 0, open: 1, payment: 2, paid: 3 }
 
+  belongs_to :clientship
   has_many :sales_items
   has_many :timeslots, through: :sales_items
 
