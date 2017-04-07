@@ -1,5 +1,7 @@
 class Business < ApplicationRecord
   has_many :employments
+  has_many :clientships
+  has_many :reviews, through: :clientships
 
   AASM_STATES = {
     disabled: 0, wizard_0: 1, wizard_1: 2, wizard_2: 3, wizard_3: 4, wizard_4: 5,
