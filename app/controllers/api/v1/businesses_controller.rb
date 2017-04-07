@@ -20,8 +20,12 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
   def sign_up_progress
     results = []
+    aasm_states = {
+      wizard_1: 1, wizard_2: 2, wizard_3: 3, wizard_4: 4, wizard_5: 5,
+      wizard_6: 6, wizard_7: 7, wizard_8: 8
+    }
 
-    Business::AASM_STATES.each do |state|
+    aasm_states.each do |state|
       results << {
         step: state[0],
         count: Business.imported(false).by_step(state[1]).count
