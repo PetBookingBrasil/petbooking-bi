@@ -91,7 +91,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                     name: business.name,
                     sales: row.total_events,
                     address: business.city,
-                    reviews: reviews,
+                    reviews: reviews.to_f || 0,
                     baths: baths,
                     others: others,
                     leathering: leathering,
