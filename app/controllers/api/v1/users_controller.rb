@@ -31,7 +31,7 @@ class Api::V1::UsersController < Api::V1::BaseController
                        COUNT(coalesce(sales_items.id)) AS total_events')
               .group('sales_orders.clientship_id')
               .order('total_paid desc')
-              .limit(3).map do |row|
+              .limit(10).map do |row|
                 if user = User.find_by(id: row.clientship_id)
                   users << {
                     name: user.name,

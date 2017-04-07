@@ -8,7 +8,7 @@ class Api::V1::EmploymentsController < Api::V1::BaseController
                       COUNT(sales_items.id) AS total_services')
              .group('employment_id')
              .order('total_paid DESC')
-             .limit(3).each do |row|
+             .limit(10).each do |row|
                 employees << {
                   name: row.employment.name,
                   profit: row.total_paid.to_f,
