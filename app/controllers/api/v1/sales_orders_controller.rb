@@ -36,14 +36,13 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     12.times do |index|
       # index+1 prevents from getting the current month
       date  = Date.today - (index+1).month
-      month = Date::MONTHNAMES[date.month]
       total = SalesOrder.joins(:sales_items)
                         .paid
                         .online(true)
                         .between(date.beginning_of_month, date.end_of_month)
                         .pluck('sales_items.unit_price').sum.to_f
       # build a hash with months and their values
-      months << { month: month, total: total }
+      months << { month: I18n.l(date, format: "%B"), total: total }
     end
 
     render json: { current_month: current, months: months.reverse }, status: :ok

@@ -2,14 +2,12 @@ class Api::V1::UsersController < Api::V1::BaseController
   def total_since_launch
     total = User.count
     months = []
-
     12.times do |index|
       # index+1 prevents from getting the current month
       date  = Date.today - (index+1).month
-      month = Date::MONTHNAMES[date.month]
       count = User.between(date.beginning_of_month, date.end_of_month).count
       # build a hash with months and their values
-      months << { month: month, count: count }
+      months << { month: I18n.l(date, format: "%B"), count: count }
     end
 
     render json: { total: total, months: months.reverse }, status: :ok

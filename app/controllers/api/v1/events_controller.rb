@@ -33,7 +33,8 @@ class Api::V1::EventsController < Api::V1::BaseController
       # Total of events for this 6 months
       total += online + offline
       # Build the hash for each month
-      months << { month: Date::MONTHNAMES[date.month], online: online, offline: offline }
+      months << { month: I18n.l(date, format: "%B"),
+                  online: online, offline: offline }
     end
 
     render json: { total: total, months: months.reverse }, status: :ok

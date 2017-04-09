@@ -26,6 +26,8 @@ module BusinessIntelligence
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.i18n.default_locale = :'pt-BR'
+    config.i18n.available_locales = :'pt-BR'
 
     # Configure RackCORS to receive requests from anywhere (change this later)
     config.middleware.insert_before 0, Rack::Cors do
