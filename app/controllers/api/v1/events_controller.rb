@@ -26,7 +26,8 @@ class Api::V1::EventsController < Api::V1::BaseController
     months = []
 
     6.times do |index|
-      date = Date.today - index.month
+      # index+1 prevents from getting the current month
+      date = Date.today - (index+1).month
       online = Event.online(true).between(date.beginning_of_month, date.end_of_month).count
       offline = Event.online(false).between(date.beginning_of_month, date.end_of_month).count
       # Total of events for this 6 months
@@ -35,6 +36,6 @@ class Api::V1::EventsController < Api::V1::BaseController
       months << { month: Date::MONTHNAMES[date.month], online: online, offline: offline }
     end
 
-    render json: { total: total, months: months }, status: :ok
+    render json: { total: total, months: months.reverse }, status: :ok
   end
 end

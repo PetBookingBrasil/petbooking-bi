@@ -34,6 +34,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     months = []
 
     12.times do |index|
+      # index+1 prevents from getting the current month
       date  = Date.today - (index+1).month
       month = Date::MONTHNAMES[date.month]
       total = SalesOrder.joins(:sales_items)
@@ -45,7 +46,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
       months << { month: month, total: total }
     end
 
-    render json: { current_month: current, months: months }, status: :ok
+    render json: { current_month: current, months: months.reverse }, status: :ok
   end
 
   def top_online_services
