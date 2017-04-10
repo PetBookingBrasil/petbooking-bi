@@ -114,22 +114,22 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     SalesOrder.paid
               .online(true)
               .joins(:timeslots)
-              .select("count(*) services, to_char(timeslots.starts_at, 'Day') AS day_of_week")
+              .select("count(*) services, extract(DOW from timeslots.starts_at) AS day_of_week")
               .order('services DESC')
               .group('day_of_week')
               .each do |row|
-                online << { day: row.day_of_week, services: row.services }
+                online << { day: I18n.t('date.day_names')[row.day_of_week], services: row.services }
               end
 
     # First calculate for Offline timeslots
     SalesOrder.paid
               .online(false)
               .joins(:timeslots)
-              .select("count(*) services, to_char(timeslots.starts_at, 'Day') AS day_of_week")
+              .select("count(*) services, extract(DOW from timeslots.starts_at) AS day_of_week")
               .order('services DESC')
               .group('day_of_week')
               .each do |row|
-                offline << { day: row.day_of_week, services: row.services }
+                offline << { day:I18n.t('date.day_names')[row.day_of_week], services: row.services }
               end
 
     render json: { online: online, offline: offline }
