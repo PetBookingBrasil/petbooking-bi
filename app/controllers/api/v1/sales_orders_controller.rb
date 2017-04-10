@@ -22,8 +22,10 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
   end
 
   def total_last_year
+    months = []
     start_month = Date.today.beginning_of_month
     end_month   = Date.today.end_of_month
+
     # Get the value for current month
     current = SalesOrder.joins(:sales_items)
                         .paid
@@ -31,18 +33,26 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
                         .between(start_month, end_month)
                         .pluck('sales_items.unit_price').sum.to_f
 
-    months = []
 
     12.times do |index|
       # index+1 prevents from getting the current month
+      # Total sales online
       date  = Date.today - (index+1).month
-      total = SalesOrder.joins(:sales_items)
+      online = SalesOrder.joins(:sales_items)
                         .paid
                         .online(true)
                         .between(date.beginning_of_month, date.end_of_month)
-                        .pluck('sales_items.unit_price').sum.to_f
+                        .sum('sales_items.unit_price').to_f
+
+      # Total sales offline
+      offline = SalesOrder.joins(:sales_items)
+                          .paid
+                          .online(false)
+                          .between(date.beginning_of_month, date.end_of_month)
+                          .sum('sales_items.unit_price').to_f
+
       # build a hash with months and their values
-      months << { month: I18n.l(date, format: "%B"), total: total }
+      months << { month: I18n.l(date, format: "%B"), online: online, offline: offline }
     end
 
     render json: { current_month: current, months: months.reverse }, status: :ok
