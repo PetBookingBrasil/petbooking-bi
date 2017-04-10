@@ -50,7 +50,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def active_current_month
     date = Date.today
     total = User.active.count
-    month = User.between(date.beginning_of_month, date.end_of_month).count
+    month = User.active.between(date.beginning_of_month, date.end_of_month).count
 
     render json: { total: total, month: month }, status: :ok
   end
@@ -58,7 +58,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def passive_current_month
     date = Date.today
     total = User.passive.count
-    month = User.between(date.beginning_of_month, date.end_of_month).count
+    month = User.passive.between(date.beginning_of_month, date.end_of_month).count
 
     render json: { total: total, month: month }, status: :ok
   end
