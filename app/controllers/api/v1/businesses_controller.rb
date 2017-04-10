@@ -13,9 +13,9 @@ class Api::V1::BusinessesController < Api::V1::BaseController
     start_date = date.beginning_of_month
 
     total   = Business.between(start_date, end_date).count
-    average = Business.between(start_date - 6.months, end_date - 1.month).count / 6
+    average = Business.between(start_date - 6.months, end_date - 1.month).count.to_f / 6.0
 
-    render json: { total: total, average: average }, status: :ok
+    render json: { total: total, average: average.ceil }, status: :ok
   end
 
   def sign_up_progress

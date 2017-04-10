@@ -16,9 +16,9 @@ class Api::V1::UsersController < Api::V1::BaseController
   def active_today
     date = Date.today
     today = User.active_today(date).count
-    average = User.active_between(date - 30.days, date).count / 30
+    average = User.active_between(date - 30.days, date).count.to_f / 30.0
 
-    render json: { today: today, average: average }, status: :ok
+    render json: { today: today, average: average.ceil }, status: :ok
   end
 
   def top_three_customers
