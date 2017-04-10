@@ -53,6 +53,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
               .select('clientships.business_id,
                        SUM(coalesce(sales_items.paid_price, 0)) AS total_paid,
                        COUNT(coalesce(sales_items.id)) AS total_events')
+              .where('clientships.business_id NOT IN (30, 36)')
               .group('clientships.business_id')
               .order('total_paid desc')
               .limit(10).map do |row|
