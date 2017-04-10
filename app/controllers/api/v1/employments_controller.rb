@@ -1,12 +1,17 @@
 class Api::V1::EmploymentsController < Api::V1::BaseController
   def top_three_employees
+    date       = Date.today
+    end_date   = date - 1.day
+    start_date = date - 31.days
     employees = []
+
     SalesItem.joins(:sales_order, :employment)
              .select('employment_id,
                       SUM(coalesce(paid_price, 0)) AS total_paid,
                       COUNT(sales_items.id) AS total_services')
              .where('sales_orders.aasm_state = 3
                      AND employments.business_id NOT IN (30, 36)')
+             .between(start_date, end_date)
              .group('employment_id')
              .order('total_paid DESC')
              .limit(10).each do |row|
