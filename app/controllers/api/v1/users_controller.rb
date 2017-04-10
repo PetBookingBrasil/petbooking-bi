@@ -2,12 +2,15 @@ class Api::V1::UsersController < Api::V1::BaseController
   def total_since_launch
     total = User.count
     months = []
+
+    # Count and build the hash for active users
     12.times do |index|
       # index+1 prevents from getting the current month
-      date  = Date.today - (index+1).month
-      count = User.between(date.beginning_of_month, date.end_of_month).count
+      date = Date.today - (index+1).month
+      online = User.active.between(date.beginning_of_month, date.end_of_month).count
+      offline = User.passive.between(date.beginning_of_month, date.end_of_month).count
       # build a hash with months and their values
-      months << { month: I18n.l(date, format: "%B"), count: count }
+      months << { month: I18n.l(date, format: "%B"), online: online, offline: offline }
     end
 
     render json: { total: total, months: months.reverse }, status: :ok
