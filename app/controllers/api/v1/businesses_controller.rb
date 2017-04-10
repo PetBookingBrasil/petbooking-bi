@@ -29,8 +29,8 @@ class Api::V1::BusinessesController < Api::V1::BaseController
   def sign_up_progress
     results = []
     aasm_states = {
-      wizard_1: 1, wizard_2: 2, wizard_3: 3, wizard_4: 4, wizard_5: 5,
-      wizard_6: 6, wizard_7: 7, wizard_8: 8
+      wizard_0: 1, wizard_1: 2, wizard_2: 3, wizard_3: 4, wizard_4: 5,
+      wizard_5: 6, wizard_6: 7, wizard_7: 8
     }
 
     aasm_states.each do |state|
