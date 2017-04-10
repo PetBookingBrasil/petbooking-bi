@@ -19,6 +19,7 @@ Rails.application.routes.draw do
           get 'sign_up_progress'
           get 'total_last_semester'
           get 'active_current_month'
+          get 'schedulable_current_month'
         end
       end
 

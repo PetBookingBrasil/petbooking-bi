@@ -7,6 +7,14 @@ class Api::V1::BusinessesController < Api::V1::BaseController
     render json: { total: total, month: month }, status: :ok
   end
 
+  def schedulable_current_month
+    date  = Date.today
+    total = Business.active.imported(false).count
+    month = Business.active.imported(false).between(date.beginning_of_month, date.end_of_month).count
+
+    render json: { total: total, month: month }, status: :ok
+  end
+
   def total_last_semester
     date       = Date.today
     end_date   = date.end_of_month
