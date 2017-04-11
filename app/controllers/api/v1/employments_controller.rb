@@ -20,6 +20,7 @@ class Api::V1::EmploymentsController < Api::V1::BaseController
                   name: row.employment.name,
                   profit: row.total_paid.to_f,
                   services: row.total_services,
+                  business: row.employment.business.name,
                   business_id: row.employment.business_id,
                   business_slug: row.employment.business.slug
                 }
