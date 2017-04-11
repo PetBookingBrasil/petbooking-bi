@@ -65,7 +65,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
                   # Get add services that aren't bath, leathering or veterinary consultations
                   others = SalesOrder.joins(:sales_items, :clientship)
-                                     .paid
+                                     .where.not(aasm_state: 0)
                                      .between(date - 30.days, date)
                                      .where('clientships.business_id = ?', business.id)
                                      .where("name !~* 'banho' AND name !~* 'tosa' AND name !~* 'consulta veterinária'")
@@ -73,7 +73,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
                   # Get all baths sold from this Business
                   baths = SalesOrder.joins(:sales_items, :clientship)
-                                    .paid
+                                    .where.not(aasm_state: 0)
                                     .between(date - 30.days, date)
                                     .where('clientships.business_id = ?', business.id)
                                     .where("name ~* 'banho' AND name !~* 'tosa'")
@@ -81,7 +81,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
                   # Get all leathering (Tosas) sold from this Business
                   leathering = SalesOrder.joins(:sales_items, :clientship)
-                                         .paid
+                                         .where.not(aasm_state: 0)
                                          .between(date - 30.days, date)
                                          .where('clientships.business_id = ?', business.id)
                                          .where("name ~* 'tosa' AND name !~* 'banho'")
@@ -89,7 +89,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
                   # Get all veterinary consultations from this business
                   veterinary_consultations = SalesOrder.joins(:sales_items, :clientship)
-                                                       .paid
+                                                       .where.not(aasm_state: 0)
                                                        .between(date - 30.days, date)
                                                        .where('clientships.business_id = ?', business.id)
                                                        .where("name ~* 'consulta veterinária'")
