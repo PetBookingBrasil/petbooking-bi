@@ -42,7 +42,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
 
     # Get the value for current month
     current = SalesOrder.joins(:sales_items)
-                        .paid
+                        .where.not(aasm_state: 0)
                         .online(true)
                         .between(start_month, end_month)
                         .pluck('sales_items.unit_price').sum.to_f
@@ -60,7 +60,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
 
       # Total sales offline
       offline = SalesOrder.joins(:sales_items)
-                          .paid
+                          .where.not(aasm_state: 0)
                           .online(false)
                           .between(date.beginning_of_month, date.end_of_month)
                           .sum('sales_items.unit_price').to_f
