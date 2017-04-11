@@ -84,7 +84,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Now calculate the Top 10
     SalesOrder.joins(:sales_items)
               .online(true)
-              .paid
+              .where.not(aasm_state: 0)
               .select('sales_items.name,
                        SUM(coalesce(sales_items.paid_price, 0)) AS sales_item_total')
               .group('sales_items.name')
@@ -113,7 +113,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Now calculate the Top 10
     SalesOrder.joins(:sales_items)
               .online(false)
-              .paid
+              .where.not(aasm_state: 0)
               .select('sales_items.name,
                        SUM(coalesce(sales_items.paid_price, 0)) AS sales_item_total')
               .group('sales_items.name')
