@@ -48,7 +48,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
     businesses = []
 
     SalesOrder.joins(:sales_items, :clientship)
-              .paid
+              .where.not(aasm_state: 0)
               .between(date - 30.days, date)
               .select('clientships.business_id,
                        SUM(coalesce(sales_items.paid_price, 0)) AS total_paid,
