@@ -61,7 +61,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                   # Get the Reviews for this
                   reviews = Business.joins(:reviews)
                                     .where(id: row.business_id)
-                                    .average('reviews.business_rating')
+                                    .where('reviews.created_at >= ? AND reviews.created_at <= ?', date - 30.days, date)
 
                   # Get add services that aren't bath, leathering or veterinary consultations
                   others = SalesOrder.joins(:sales_items, :clientship)
@@ -100,7 +100,8 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                     name: business.name,
                     sales: row.total_events,
                     address: business.city,
-                    reviews: reviews.to_f || 0,
+                    reviews: reviews.count,
+                    reviews_average: reviews.average('reviews.business_rating').to_f || 0,
                     baths: baths,
                     others: others,
                     leathering: leathering,
