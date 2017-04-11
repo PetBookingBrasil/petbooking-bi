@@ -74,17 +74,21 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
 
   def top_online_services
     services = []
+    start_month = (Date.today - 31.days)
+    end_month   = (Date.today - 1.day)
     top_10_amount = 0
     # Calculate the total amount paid for services
     total_in_services = SalesOrder.joins(:sales_items)
-                        .paid
-                        .online(true)
-                        .pluck('sales_items.unit_price').sum.to_f
+                                  .where.not(aasm_state: 0)
+                                  .between(start_month, end_month)
+                                  .online(true)
+                                  .sum('sales_items.unit_price').to_f
 
     # Now calculate the Top 10
     SalesOrder.joins(:sales_items)
               .online(true)
               .where.not(aasm_state: 0)
+              .between(start_month, end_month)
               .select('sales_items.name,
                        SUM(coalesce(sales_items.paid_price, 0)) AS sales_item_total')
               .group('sales_items.name')
@@ -103,17 +107,21 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
 
   def top_offline_services
     services = []
+    start_month = (Date.today - 31.days)
+    end_month   = (Date.today - 1.day)
     top_10_amount = 0
     # Calculate the total amount paid for services
     total_in_services = SalesOrder.joins(:sales_items)
-                        .paid
+                        .where.not(aasm_state: 0)
+                        .between(start_month, end_month)
                         .online(false)
-                        .pluck('sales_items.unit_price').sum.to_f
+                        .sum('sales_items.unit_price').to_f
 
     # Now calculate the Top 10
     SalesOrder.joins(:sales_items)
               .online(false)
               .where.not(aasm_state: 0)
+              .between(start_month, end_month)
               .select('sales_items.name,
                        SUM(coalesce(sales_items.paid_price, 0)) AS sales_item_total')
               .group('sales_items.name')
