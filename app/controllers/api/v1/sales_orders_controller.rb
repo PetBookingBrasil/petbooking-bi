@@ -8,25 +8,25 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
 
     # Calculate the Budget for today online sales
     today_online = SalesOrder.joins(:sales_items)
-                             .paid.online(true)
+                             .where.not(aasm_state: 0).online(true)
                              .between(start_date, end_date)
                              .pluck('sales_items.unit_price').sum.to_f
 
     # Calculate the monthly average online sales
     average_online = SalesOrder.joins(:sales_items)
-                               .paid.online(true)
+                               .where.not(aasm_state: 0).online(true)
                                .between(start_month, end_month)
                                .pluck('sales_items.unit_price').sum.to_f / 30.0
 
     # Calculate the Budget for today offline sales
     today_offline = SalesOrder.joins(:sales_items)
-                              .paid.online(false)
+                              .where.not(aasm_state: 0).online(false)
                               .between(start_date, end_date)
                               .pluck('sales_items.unit_price').sum.to_f
 
     # Calculate the monthly average offline sales
     average_offline = SalesOrder.joins(:sales_items)
-                                .paid.online(false)
+                                .where.not(aasm_state: 0).online(false)
                                 .between(start_month, end_month)
                                 .pluck('sales_items.unit_price').sum.to_f / 30.0
 
