@@ -9,7 +9,7 @@ class Api::V1::EmploymentsController < Api::V1::BaseController
              .select('employment_id,
                       SUM(coalesce(paid_price, 0)) AS total_paid,
                       COUNT(sales_items.id) AS total_services')
-             .where('sales_orders.aasm_state = 3
+             .where('sales_orders.aasm_state != 0
                      AND employments.business_id NOT IN (30, 36)')
              .between(start_date, end_date)
              .group('employment_id')
