@@ -2,11 +2,10 @@ class Api::V1::EventsController < Api::V1::BaseController
   # Events in fact is the schedule event, when user schedule a service
 
   def today_and_average
-    date         = Date.today - 1.month
-    today_end    = date.end_of_day
-    today_start  = date.beginning_of_day
-    month_end    = date.end_of_month
-    month_start  = date.beginning_of_month
+    today_end    = Date.today.end_of_day
+    today_start  = Date.today.beginning_of_day
+    month_end    = Date.today.end_of_month - 1.month
+    month_start  = Date.today.beginning_of_month - 1.month
 
     # Build the values for ONLINE events
     online = Event.online(true).between(today_start, today_end).count
