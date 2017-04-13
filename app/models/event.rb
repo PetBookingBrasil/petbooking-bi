@@ -3,7 +3,8 @@ class Event < ApplicationRecord
   has_one :review
 
   scope :between, -> (start_date, end_date) {
-    where('events.created_at >= ? AND events.created_at <= ?', start_date, end_date)
+    joins(:timeslot)
+    .where('timeslots.starts_at >= ? AND timeslots.starts_at <= ?', start_date, end_date)
   }
 
   scope :online, -> (boolean) {
