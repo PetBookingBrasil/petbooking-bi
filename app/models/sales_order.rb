@@ -10,4 +10,8 @@ class SalesOrder < ApplicationRecord
   scope :between, -> (start_date, end_date){
     where('sales_orders.created_at >= ? AND sales_orders.created_at <= ?', start_date, end_date)
   }
+  scope :between_timeslot, -> (start_date, end_date){
+    joins(:timeslots)
+    .where('timeslots.starts_at >= ? AND timeslots.starts_at <= ?', start_date, end_date)
+  }
 end

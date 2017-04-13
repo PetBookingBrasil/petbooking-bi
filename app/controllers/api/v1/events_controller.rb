@@ -7,14 +7,14 @@ class Api::V1::EventsController < Api::V1::BaseController
     month_end    = Date.today.end_of_month - 1.month
     month_start  = Date.today.beginning_of_month - 1.month
 
-    # Build the values for ONLINE events
-    online = Event.online(true).between(today_start, today_end).count
-    online_average = Event.online(true).between(month_start, month_end).count / 30.0
+    # Get all Events SOLD today
+    online = Event.online(true).between_sales(today_start, today_end).count
+    online_average = Event.online(true).between_sales(month_start, month_end).count / 30.0
     online_hash = { total: online, average: online_average.ceil }
 
-    # Build the values for OFFLINE events
-    offline = Event.online(false).between(today_start, today_end).count
-    offline_average = Event.online(false).between(month_start, month_end).count / 30.0
+    # Get all events that OCCURS today
+    offline = Event.online(false).between_timeslots(today_start, today_end).count
+    offline_average = Event.online(false).between_timeslots(month_start, month_end).count / 30.0
     offline_hash = { total: offline, average: offline_average.ceil }
 
     render json: { online: online_hash, offline: offline_hash }, status: :ok

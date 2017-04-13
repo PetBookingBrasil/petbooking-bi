@@ -7,32 +7,45 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     end_month   = (Date.today - 1.day)
 
     # Calculate the Budget for today online sales
+    # We use SalesOrder because we want to calculate the real purchases
+    # not the schedules that occur today
     today_online = SalesOrder.joins(:sales_items)
-                             .where.not(aasm_state: 0).online(true)
+                             .online(true)
+                             .where.not(aasm_state: 0)
                              .between(start_date, end_date)
-                             .pluck('sales_items.unit_price').sum.to_f
+                             .sum('sales_items.paid_price').to_f
 
     # Calculate the monthly average online sales
+    # We use SalesOrder because we want to calculate the real purchases
+    # not the schedules that occur in last 30 days
     average_online = SalesOrder.joins(:sales_items)
-                               .where.not(aasm_state: 0).online(true)
+                               .online(true)
+                               .where.not(aasm_state: 0)
                                .between(start_month, end_month)
-                               .pluck('sales_items.unit_price').sum.to_f / 30.0
+                               .sum('sales_items.paid_price').to_f / 30.0
 
     # Calculate the Budget for today offline sales
-    today_offline = SalesOrder.joins(:sales_items)
-                              .where.not(aasm_state: 0).online(false)
-                              .between(start_date, end_date)
-                              .pluck('sales_items.unit_price').sum.to_f
+    # We use Timeslot because we want to calculate the real schedules
+    # that occur today, not the real sales of day
+    today_offline = Timeslot.joins(:sales_item)
+                            .joins(sales_item: :sales_order)
+                            .where('sales_orders.aasm_state != 0')
+                            .where('sales_orders.online = FALSE')
+                            .between(start_date, end_date)
+                            .sum('sales_items.paid_price').to_f
 
     # Calculate the monthly average offline sales
-    average_offline = SalesOrder.joins(:sales_items)
-                                .where.not(aasm_state: 0).online(false)
-                                .between(start_month, end_month)
-                                .pluck('sales_items.unit_price').sum.to_f / 30.0
+    # We use Timeslot because we want to calculate the real schedules
+    # that occur today, not the real sales of last 30 days
+    average_offline = Timeslot.joins(:sales_item)
+                              .joins(sales_item: :sales_order)
+                              .where('sales_orders.aasm_state != 0')
+                              .where('sales_orders.online = FALSE')
+                              .between(start_month, end_month)
+                              .sum('sales_items.paid_price').to_f / 30
 
     render json: { today_online: today_online, average_online: average_online,
-                   today_offline: today_offline, average_offline: average_offline },
-           status: :ok
+                   today_offline: today_offline, average_offline: average_offline }, status: :ok
   end
 
   def total_last_year
