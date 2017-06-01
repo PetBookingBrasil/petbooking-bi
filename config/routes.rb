@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
       resources :sales_orders, path: 'sales' do
         collection do
-          get 'today'
+          get 'today(/:business_id)', to: 'sales_orders#today'
           get 'by_week_days'
           get 'total_last_year'
           get 'top_online_services'

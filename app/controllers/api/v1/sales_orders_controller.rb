@@ -10,6 +10,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # We use SalesOrder because we want to calculate the real purchases
     # not the schedules that occur today
     today_online = SalesOrder.joins(:sales_items)
+                             .by_businesses(business_ids)
                              .online(true)
                              .where.not(aasm_state: 0)
                              .between(start_date, end_date)
@@ -19,6 +20,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # We use SalesOrder because we want to calculate the real purchases
     # not the schedules that occur in last 30 days
     average_online = SalesOrder.joins(:sales_items)
+                               .by_businesses(business_ids)
                                .online(true)
                                .where.not(aasm_state: 0)
                                .between(start_month, end_month)
@@ -27,7 +29,8 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Calculate the Budget for today offline sales
     # We use Timeslot because we want to calculate the real schedules
     # that occur today, not the real sales of day
-    today_offline = Timeslot.joins(:sales_item)
+    today_offline = Timeslot.by_businesses(business_ids)
+                            .joins(:sales_item)
                             .joins(sales_item: :sales_order)
                             .where('sales_orders.aasm_state != 0')
                             .where('sales_orders.online = FALSE')
@@ -37,7 +40,8 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Calculate the monthly average offline sales
     # We use Timeslot because we want to calculate the real schedules
     # that occur today, not the real sales of last 30 days
-    average_offline = Timeslot.joins(:sales_item)
+    average_offline = Timeslot.by_businesses(business_ids)
+                              .joins(:sales_item)
                               .joins(sales_item: :sales_order)
                               .where('sales_orders.aasm_state != 0')
                               .where('sales_orders.online = FALSE')

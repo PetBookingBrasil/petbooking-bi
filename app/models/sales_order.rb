@@ -14,4 +14,9 @@ class SalesOrder < ApplicationRecord
     joins(:timeslots)
     .where('timeslots.starts_at >= ? AND timeslots.starts_at <= ?', start_date, end_date)
   }
+
+  scope :by_businesses, -> (business_ids) {
+    joins(clientship: [:business])
+    .where('business_id IN (?)', business_ids) unless business_ids.empty?
+  }
 end
