@@ -26,8 +26,8 @@ class Api::V1::EventsController < Api::V1::BaseController
     6.times do |index|
       # index+1 prevents from getting the current month
       date = Date.today - (index+1).month
-      online = Event.online(true).between_sales(date.beginning_of_month, date.end_of_month).count
-      offline = Event.online(false).between_sales(date.beginning_of_month, date.end_of_month).count
+      online = Event.by_businesses(business_ids).online(true).between_sales(date.beginning_of_month, date.end_of_month).count
+      offline = Event.by_businesses(business_ids).online(false).between_sales(date.beginning_of_month, date.end_of_month).count
       # Total of events for this 6 months
       total += online + offline
       # Build the hash for each month
