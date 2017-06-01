@@ -1,6 +1,13 @@
 class Event < ApplicationRecord
   belongs_to :timeslot
+
   has_one :review
+
+  # Get events by business
+  scope :by_businesses, -> (business_ids){
+    joins(timeslot: [:employment])
+    .where('employments.business_id IN (?)', business_ids) unless business_ids.empty?
+  }
 
   # Get the Event based on when it was sold
   scope :between_sales, -> (start_date, end_date) {

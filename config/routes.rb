@@ -25,8 +25,8 @@ Rails.application.routes.draw do
 
       resources :events do
         collection do
-          get 'today_and_average'
-          get 'total_last_semester'
+          get 'today_and_average(/:business_id)', to: 'events#today_and_average'
+          get 'total_last_semester(/:business_id)', to: 'events#total_last_semester'
         end
       end
 

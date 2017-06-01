@@ -7,6 +7,8 @@ gem 'rails-i18n', '~> 5.0.0'
 gem 'pg', '~> 0.18'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
+# Allows business to have parent and childs
+gem 'ancestry'
 # Load ENV variables on Startup
 gem 'dotenv-rails', '>= 2.0.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder

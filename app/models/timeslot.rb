@@ -1,5 +1,6 @@
 class Timeslot < ApplicationRecord
   belongs_to :sales_item
+  belongs_to :employment
   has_one :event
 
   scope :between, -> (start_date, end_date) {
