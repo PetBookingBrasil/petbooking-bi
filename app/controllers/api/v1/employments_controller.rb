@@ -1,5 +1,5 @@
 class Api::V1::EmploymentsController < Api::V1::BaseController
-  def top_three_employees
+  def top_employees
     date       = Date.today
     end_date   = date - 1.day
     start_date = date - 31.days

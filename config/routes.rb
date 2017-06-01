@@ -42,7 +42,8 @@ Rails.application.routes.draw do
 
       resources :employments do
         collection do
-          get 'top_three_employees(/:business_id)', to: 'employments#top_three_employees'
+          get 'top_three_employees(/:business_id)', to: 'employments#top_employees'
+          get 'top_employees(/:business_id)', to: 'employments#top_employees'
         end
       end
     end
