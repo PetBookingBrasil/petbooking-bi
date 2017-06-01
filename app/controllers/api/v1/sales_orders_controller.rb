@@ -58,7 +58,8 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     end_month   = Date.today.end_of_month
 
     # Get the value for current month
-    current = SalesOrder.joins(:sales_items)
+    current = SalesOrder.by_businesses(business_ids)
+                        .joins(:sales_items)
                         .where.not(aasm_state: 0)
                         .online(true)
                         .between(start_month, end_month)
@@ -69,14 +70,16 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
       # index+1 prevents from getting the current month
       # Total sales online
       date  = Date.today - (index+1).month
-      online = SalesOrder.joins(:sales_items)
-                        .paid
-                        .online(true)
-                        .between(date.beginning_of_month, date.end_of_month)
-                        .sum('sales_items.unit_price').to_f
+      online = SalesOrder.by_businesses(business_ids)
+                         .joins(:sales_items)
+                         .paid
+                         .online(true)
+                         .between(date.beginning_of_month, date.end_of_month)
+                         .sum('sales_items.unit_price').to_f
 
       # Total sales offline
-      offline = SalesOrder.joins(:sales_items)
+      offline = SalesOrder.by_businesses(business_ids)
+                          .joins(:sales_items)
                           .where.not(aasm_state: 0)
                           .online(false)
                           .between(date.beginning_of_month, date.end_of_month)
