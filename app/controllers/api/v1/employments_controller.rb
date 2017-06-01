@@ -6,6 +6,7 @@ class Api::V1::EmploymentsController < Api::V1::BaseController
     employees = []
 
     SalesItem.joins(:sales_order, :employment)
+             .by_businesses(business_ids)
              .select('employment_id,
                       SUM(coalesce(paid_price, 0)) AS total_paid,
                       COUNT(sales_items.id) AS total_services')
