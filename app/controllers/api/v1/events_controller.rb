@@ -37,13 +37,4 @@ class Api::V1::EventsController < Api::V1::BaseController
 
     render json: { total: total, months: months.reverse }, status: :ok
   end
-
-  private
-
-  def business_ids
-    @business ||= Business.find(params[:business_id])
-    @business.path_ids if @business
-  rescue
-    []
-  end
 end
