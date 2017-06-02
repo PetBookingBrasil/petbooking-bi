@@ -65,4 +65,5 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     render json: { total: total, month: month }, status: :ok
   end
+  
 end

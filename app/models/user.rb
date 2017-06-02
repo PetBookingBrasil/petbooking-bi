@@ -14,4 +14,5 @@ class User < ApplicationRecord
     active.
     where('last_sign_in_at >= ? AND last_sign_in_at <= ?', start_date, end_date)
   }
+
 end
