@@ -98,14 +98,16 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     end_month   = (Date.today - 1.day)
     top_10_amount = 0
     # Calculate the total amount paid for services
-    total_in_services = SalesOrder.joins(:sales_items)
+    total_in_services = SalesOrder.by_businesses(business_ids)
+                                  .joins(:sales_items)
                                   .where.not(aasm_state: 0)
                                   .between(start_month, end_month)
                                   .online(true)
                                   .sum('sales_items.unit_price').to_f
 
     # Now calculate the Top 10
-    SalesOrder.joins(:sales_items)
+    SalesOrder.by_businesses(business_ids)
+              .joins(:sales_items)
               .online(true)
               .where.not(aasm_state: 0)
               .between(start_month, end_month)
@@ -131,14 +133,16 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     end_month   = (Date.today - 1.day)
     top_10_amount = 0
     # Calculate the total amount paid for services
-    total_in_services = SalesOrder.joins(:sales_items)
-                        .where.not(aasm_state: 0)
-                        .between(start_month, end_month)
-                        .online(false)
-                        .sum('sales_items.unit_price').to_f
+    total_in_services = SalesOrder.by_businesses(business_ids)
+                                  .joins(:sales_items)
+                                  .where.not(aasm_state: 0)
+                                  .between(start_month, end_month)
+                                  .online(false)
+                                  .sum('sales_items.unit_price').to_f
 
     # Now calculate the Top 10
-    SalesOrder.joins(:sales_items)
+    SalesOrder.by_businesses(business_ids)
+              .joins(:sales_items)
               .online(false)
               .where.not(aasm_state: 0)
               .between(start_month, end_month)

@@ -35,8 +35,8 @@ Rails.application.routes.draw do
           get 'today(/:business_id)', to: 'sales_orders#today'
           get 'by_week_days'
           get 'total_last_year(/:business_id)', to: 'sales_orders#total_last_year'
-          get 'top_online_services'
-          get 'top_offline_services'
+          get 'top_online_services(/:business_id)', to: 'sales_orders#top_online_services'
+          get 'top_offline_services(/:business_id)', to: 'sales_orders#top_offline_services'
         end
       end
 
