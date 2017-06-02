@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
       resources :businesses do
         collection do
-          get 'top_businesses'
+          get 'top_businesses(/:limit)(/:business_id)', to: 'businesses#top_businesses'
           get 'sign_up_progress'
           get 'total_last_semester'
           get 'active_current_month'

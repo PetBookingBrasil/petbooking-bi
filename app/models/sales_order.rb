@@ -8,15 +8,14 @@ class SalesOrder < ApplicationRecord
   scope :paid, -> { where(aasm_state: AASM_STATES[:paid]) }
   scope :online, -> (boolean) { where(online: boolean) }
   scope :between, -> (start_date, end_date){
-    where('sales_orders.created_at >= ? AND sales_orders.created_at <= ?', start_date, end_date)
+    where('sales_orders.consumed_on >= ? AND sales_orders.consumed_on <= ?', start_date, end_date)
   }
   scope :between_timeslot, -> (start_date, end_date){
     joins(:timeslots)
     .where('timeslots.starts_at >= ? AND timeslots.starts_at <= ?', start_date, end_date)
   }
-
   scope :by_businesses, -> (business_ids) {
-    joins(clientship: [:business])
-    .where('business_id IN (?)', business_ids) unless business_ids.empty?
+    joins(:clientship)
+    .where('clientships.business_id IN (?)', business_ids) unless business_ids.empty?
   }
 end
