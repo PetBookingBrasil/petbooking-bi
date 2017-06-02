@@ -20,6 +20,7 @@ Rails.application.routes.draw do
           get 'total_last_semester'
           get 'active_current_month'
           get 'schedulable_current_month'
+          get 'total_business_clients(/:business_id)', to:'businesses#total_business_clients'
         end
       end
 

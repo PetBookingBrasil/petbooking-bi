@@ -24,4 +24,9 @@ class Business < ApplicationRecord
   scope :by_step, -> (step) {
     where(aasm_state: step)
   }
+
+  scope :by_businesses, -> (business_ids){
+    joins(:clientships)
+    .where('clientships.business_id IN (?)', business_ids) unless business_ids.empty?
+  }
 end

@@ -113,4 +113,21 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
     render json: { businesses: businesses }, status: :ok
   end
+
+  def total_business_clients
+    if (business_ids.empty?)
+      total = Business.by_businesses(business_ids)
+                      .joins(:clientships)
+                      .where('clientships.business_id != 0')
+                      .count
+    else
+      total = Business.by_businesses(business_ids)
+                      .joins(:clientships)
+                      .where('clientships.business_id IN (?)', business_ids)
+                      .count
+    end
+    render json: { total: total }, status: :ok
+  end
+
+
 end
