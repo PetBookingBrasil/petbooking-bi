@@ -119,43 +119,33 @@ class Api::V1::BusinessesController < Api::V1::BaseController
   def total_business_clients
     businesses = []
 
-    if (business_ids != business_ids.empty?)
       total_women = Clientship.by_businesses(business_ids)
                               .joins(:user)
-                              .where('clientships.business_id != 0')
-                              .where('users.gender = 1')
+                              .where('users.gender = ?', '1')
                               .count
       total_men = Clientship.by_businesses(business_ids)
                             .joins(:user)
-                            .where('clientships.business_id != 0')
-                            .where('users.gender = 0')
+                            .where('users.gender = ?', '0')
                             .count
-      total = total_women + total_men
-      men_percentage = (total_men * 100)/ total
-      women_percentage = (total_women * 100)/ total
+      total_undefined = Clientship.by_businesses(business_ids)
+                                  .joins(:user)
+                                  .where('users.gender = ?', nil)
+                                  .count
 
-    else
-      total_women = Clientship.by_businesses(business_ids)
-                              .joins(:user)
-                              .where('clientships.business_id IN (?)', business_ids)
-                              .where('users.gender = 1')
-                              .count
-      total_men = Clientship.by_businesses(business_ids)
-                            .joins(:user)
-                            .where('clientships.business_id IN (?)', business_ids)
-                            .where('users.gender = 0')
-                            .count
-      total = total_women + total_men
+      total = total_women + total_men + total_undefined
+
       men_percentage = (total_men * 100)/ total
       women_percentage = (total_women * 100)/ total
-    end
+      undefined_percentage = (total_undefined * 100)/ total
 
     businesses << {
       total: total,
       total_men: total_men,
       men_percentage: men_percentage,
       total_women: total_women,
-      women_percentage: women_percentage
+      women_percentage: women_percentage,
+      total_undefined: total_undefined,
+      undefined_percentage: undefined_percentage
     }
 
     render json: { businesses: businesses }, status: :ok

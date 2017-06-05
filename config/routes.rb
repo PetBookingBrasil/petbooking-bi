@@ -51,6 +51,7 @@ Rails.application.routes.draw do
       resources :pets do
         collection do
           get 'total_pets(/:business_id)', to: 'pets#total_pets'
+          #get 'top_overall(/:business_id)', to: 'pets#total_pets'
         end
       end
     end
