@@ -134,19 +134,10 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
       total = total_women + total_men + total_undefined
 
-      men_percentage = (total_men * 100)/ total
-      women_percentage = (total_women * 100)/ total
-      undefined_percentage = (total_undefined * 100)/ total
+    businesses << [{label: "Homens", value: total_men},
+      {label: "Mulheres", value: total_women},
+      {label: "Indefinido", value: total_undefined}]
 
-    businesses << {
-      total: total,
-      total_men: total_men,
-      men_percentage: men_percentage,
-      total_women: total_women,
-      women_percentage: women_percentage,
-      total_undefined: total_undefined,
-      undefined_percentage: undefined_percentage
-    }
 
     render json: { businesses: businesses }, status: :ok
   end
