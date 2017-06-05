@@ -47,6 +47,12 @@ Rails.application.routes.draw do
           get 'top_employees(/:business_id)', to: 'employments#top_employees'
         end
       end
+
+      resources :pets do
+        collection do
+          get 'total_pets(/:business_id)', to: 'pets#total_pets'
+        end
+      end
     end
   end
 end

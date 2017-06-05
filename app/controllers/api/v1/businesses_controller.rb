@@ -124,10 +124,10 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                               .where('users.gender = 1')
                               .count
       total_men = Clientship.by_businesses(business_ids)
-                              .joins(:user)
-                              .where('clientships.business_id != 0')
-                              .where('users.gender = 0')
-                              .count
+                            .joins(:user)
+                            .where('clientships.business_id != 0')
+                            .where('users.gender = 0')
+                            .count
       total = total_women + total_men
       men_percentage = (total_men * 100)/ total
       women_percentage = (total_women * 100)/ total
@@ -139,10 +139,10 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                               .where('users.gender = 1')
                               .count
       total_men = Clientship.by_businesses(business_ids)
-                              .joins(:user)
-                              .where('clientships.business_id IN (?)', business_ids)
-                              .where('users.gender = 0')
-                              .count
+                            .joins(:user)
+                            .where('clientships.business_id IN (?)', business_ids)
+                            .where('users.gender = 0')
+                            .count
       total = total_women + total_men
       men_percentage = (total_men * 100)/ total
       women_percentage = (total_women * 100)/ total

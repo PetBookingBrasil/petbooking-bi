@@ -5,7 +5,6 @@ class Clientship < ActiveRecord::Base
   has_many :reviews, through: :events
 
   scope :by_businesses, -> (business_ids){
-
     where('clientships.business_id IN (?)', business_ids) unless business_ids.empty?
   }
 end
