@@ -117,29 +117,32 @@ class Api::V1::BusinessesController < Api::V1::BaseController
   end
 
   def total_business_clients
-    businesses = []
+    clients = []
 
-      total_women = Clientship.by_businesses(business_ids)
-                              .joins(:user)
-                              .where('users.gender = ?', '1')
-                              .count
-      total_men = Clientship.by_businesses(business_ids)
+    total_women = Clientship.by_businesses(business_ids)
                             .joins(:user)
-                            .where('users.gender = ?', '0')
+                            .where('users.gender = ?', 1)
                             .count
-      total_undefined = Clientship.by_businesses(business_ids)
-                                  .joins(:user)
-                                  .where('users.gender = ?', nil)
-                                  .count
 
-      total = total_women + total_men + total_undefined
+    total_men = Clientship.by_businesses(business_ids)
+                          .joins(:user)
+                          .where('users.gender = ?', 0)
+                          .count
 
-    businesses << [{label: "Homens", value: total_men},
-      {label: "Mulheres", value: total_women},
-      {label: "Indefinido", value: total_undefined}]
+    total_undefined = Clientship.by_businesses(business_ids)
+                                .joins(:user)
+                                .where('users.gender IS NULL')
+                                .count
 
+    total = total_women + total_men + total_undefined
 
-    render json: { businesses: businesses }, status: :ok
+    clients << [
+      {label: 'Total', value: total}
+      {label: 'Homens', value: total_men},
+      {label: 'Mulheres', value: total_women},
+      {label: 'Indefinido', value: total_undefined}]
+
+    render json: { clients: clients }, status: :ok
   end
 
 end
