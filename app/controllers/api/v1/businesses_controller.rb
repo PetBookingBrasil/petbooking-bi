@@ -134,8 +134,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
     total = total_women + total_men + total_undefined
 
-    clients = [
-      {label: 'Total', value: total}
+    clients = [ {label: 'Total', value: total},
       {label: 'Homens', value: total_men},
       {label: 'Mulheres', value: total_women},
       {label: 'Indefinido', value: total_undefined}]

@@ -10,8 +10,7 @@ class Api::V1::PetsController < Api::V1::BaseController
 
     total = total_dog + total_cat
 
-    pets = [
-      { label: 'Total',      value: total},
+    pets = [{ label: 'Total',      value: total},
       { label: 'Cachorros',  value: total_dog},
       { label: 'Gatos',      value: total_cat}
     ]
