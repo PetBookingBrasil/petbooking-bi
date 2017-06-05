@@ -3,8 +3,7 @@ class Pet < ApplicationRecord
   belongs_to :breed
 
   scope :by_businesses, -> (business_ids){
-    joins(:user)
-    joins(:clientship)
+    joins(user: [:clientships])
     .where('clientships.business_id IN (?)', business_ids) unless business_ids.empty?
   }
 

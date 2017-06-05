@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_many :clientships
+  
   scope :active, -> { where('last_sign_in_at IS NOT NULL') }
   scope :passive, -> { where('last_sign_in_at IS NULL') }
   scope :between, -> (start_date, end_date) {

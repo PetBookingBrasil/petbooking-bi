@@ -26,13 +26,12 @@ class Api::V1::PetsController < Api::V1::BaseController
     render json: { pets: pets }, status: :ok
   end
 
-  ##def top_breeds
+  def top_breeds
 
-#    top_overall = Pet.by_businesses(business_ids)
-#                     .by_kind('dog')
-#                     .order('breeds.id asc')
+    top_overall = Pet.by_businesses(business_ids)
+                     .by_kind('dog')
+                     .order('breeds.id')
 
-#    render json: { top_overall: top_overall }, status: :ok
-
-  #end
+    render json: { top_overall: top_overall }, status: :ok
+  end
 end
