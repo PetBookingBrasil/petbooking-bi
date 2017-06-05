@@ -117,8 +117,6 @@ class Api::V1::BusinessesController < Api::V1::BaseController
   end
 
   def total_business_clients
-    clients = []
-
     total_women = Clientship.by_businesses(business_ids)
                             .joins(:user)
                             .where('users.gender = ?', 1)
@@ -136,7 +134,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
     total = total_women + total_men + total_undefined
 
-    clients << [
+    clients = [
       {label: 'Total', value: total}
       {label: 'Homens', value: total_men},
       {label: 'Mulheres', value: total_women},
