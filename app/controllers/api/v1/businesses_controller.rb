@@ -45,7 +45,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
   def top_businesses_last_year
     limit = params[:limit] || 5
-    amounts = {}
+    amounts = []
 
     # Load the LIMIT businesses with more revenues on the last year.
     businesses_ids = SalesOrder.joins(:sales_items, :clientship)
@@ -60,20 +60,19 @@ class Api::V1::BusinessesController < Api::V1::BaseController
               .order('total_paid desc')
               .limit(limit).map{|row| row.business_id}
 
-      12.times do |i| #12
-        businesses_amounts = []
-        date   = Date.today - (i+1).month
-        # Starting the search for month
-        businesses_ids.each do |business_id| #4
-          #looking for amount for the current business and month
-          business = Business.find(business_id)
+      businesses_ids.each do |business_id|
+        business = Business.find(business_id)
+        businesses_amounts = {"#{business.name}" => []}
+        12.times do |i| #12
+
+          date   = Date.today - (i+1).month
           amount = SalesOrder.joins(:clientship).where('clientships.business_id = ?', business_id)
                            .joins(:sales_items)
                            .between(date.beginning_of_month, date.end_of_month)
                            .sum('sales_items.unit_price').to_f
-          businesses_amounts << { business_name: business.name, amount: amount }
+          businesses_amounts["#{business.name}"] << { "#{I18n.l(date, format: '%B')}" => amount }
         end
-        amounts["#{I18n.l(date, format: '%B')}"] = businesses_amounts
+        amounts << businesses_amounts
       end
 
       render json: { amounts: amounts }, status: :ok
