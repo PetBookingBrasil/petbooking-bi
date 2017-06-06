@@ -48,7 +48,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
     amounts = []
 
     # Load the LIMIT businesses with more revenues on the last year.
-    SalesOrder.joins(:sales_items, :clientship)
+    businesses_ids = SalesOrder.joins(:sales_items, :clientship)
               .where.not(aasm_state: 0)
               .between(Date.today - 1.year, Date.today)
               .by_businesses(business_ids)
@@ -58,24 +58,23 @@ class Api::V1::BusinessesController < Api::V1::BaseController
               .where('clientships.business_id NOT IN (30, 36)')
               .group('clientships.business_id')
               .order('total_paid desc')
-              .limit(limit).each_with_index do |row, index|
+              .limit(limit).map{|row| row.business_id}
 
-                  business = Business.find(row.business_id)
-                  business_amount = { business_id: business.id,
-                                      business_name: business.name,
-                                      "#{index}" => []}
-                  12.times do |i|
-                    date   = Date.today - (i+1).month
-                    amount = SalesOrder.joins(:clientship).where('clientships.business_id = ?', business.id)
-                                     .joins(:sales_items)
-                                     .between(date.beginning_of_month, date.end_of_month)
-                                     .sum('sales_items.unit_price').to_f
-                    business_amount["#{index}"] << amount
-                  end
-                  amounts << business_amount
-              end
-
-      # {"janeiro": {"A": "3333", "B": "33444"}}
+      12.times do |i| #12
+        date = Date.today - (i+1).month
+        # Starting the search for month
+        businesses_amounts = { month: "#{I18n.l(date, format: '%B')}" }
+        businesses_ids.each_with_index do |business_id, index| #4
+          #looking for amount for the current business and month
+          business = Business.find(business_id)
+          amount = SalesOrder.joins(:clientship).where('clientships.business_id = ?', business_id)
+                           .joins(:sales_items)
+                           .between(date.beginning_of_month, date.end_of_month)
+                           .sum('sales_items.unit_price').to_f
+          businesses_amounts["#{business.slug}"] = amount
+        end
+        amounts << businesses_amounts
+      end
 
       render json: { amounts: amounts }, status: :ok
   end
