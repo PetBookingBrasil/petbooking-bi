@@ -71,8 +71,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                            .joins(:sales_items)
                            .between(date.beginning_of_month, date.end_of_month)
                            .sum('sales_items.unit_price').to_f
-          businesses_amounts[:business_name] = business.name
-          businesses_amounts[:amount] = amount
+          businesses_amounts["#{business.name}"] = amount
         end
         amounts << businesses_amounts
       end
