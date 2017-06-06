@@ -66,9 +66,8 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                                       "#{index}" => []}
                   12.times do |i|
                     date   = Date.today - (i+1).month
-                    amount = SalesOrder.joins(:clientship).where('clientships.business_id = ?', row.id)
+                    amount = SalesOrder.joins(:clientship).where('clientships.business_id = ?', business.id)
                                      .joins(:sales_items)
-                                     .paid
                                      .between(date.beginning_of_month, date.end_of_month)
                                      .sum('sales_items.unit_price').to_f
                     business_amount["#{index}"] << { month: I18n.l(date, format: "%B"), amount: amount }
