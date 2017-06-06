@@ -64,14 +64,14 @@ class Api::V1::BusinessesController < Api::V1::BaseController
         date = Date.today - (i+1).month
         # Starting the search for month
         businesses_amounts = { month: "#{I18n.l(date, format: '%B')}" }
-        businesses_ids.each do |business_id| #4
+        businesses_ids.each_with_index do |business_id, index| #4
           #looking for amount for the current business and month
-          business = Business.find(business_id)
+          # business = Business.find(business_id)
           amount = SalesOrder.joins(:clientship).where('clientships.business_id = ?', business_id)
                            .joins(:sales_items)
                            .between(date.beginning_of_month, date.end_of_month)
                            .sum('sales_items.unit_price').to_f
-          businesses_amounts["#{business.name}"] = amount
+          businesses_amounts["#{index}"] = amount
         end
         amounts << businesses_amounts
       end
