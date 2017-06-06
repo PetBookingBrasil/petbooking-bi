@@ -19,7 +19,6 @@ class Api::V1::PetsController < Api::V1::BaseController
   end
 
   def top_breeds
-
     top_overall = Pet.by_businesses(business_ids)
                      .by_kind('dog')
                      .order('breeds.id')
