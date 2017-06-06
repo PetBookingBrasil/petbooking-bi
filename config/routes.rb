@@ -21,6 +21,7 @@ Rails.application.routes.draw do
           get 'active_current_month'
           get 'schedulable_current_month'
           get 'total_business_clients(/:business_id)', to:'businesses#total_business_clients'
+          get 'top_businesses_last_year(/:business_id/:limit)', to:'businesses#top_businesses_last_year'
         end
       end
 
