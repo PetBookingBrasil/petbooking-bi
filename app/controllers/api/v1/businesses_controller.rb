@@ -45,9 +45,10 @@ class Api::V1::BusinessesController < Api::V1::BaseController
 
   def top_businesses_last_year
     limit = params[:limit] || 5
-    top = []
+    amounts = []
 
-    businesses_ids = SalesOrder.joins(:sales_items, :clientship)
+    # Load the LIMIT businesses with more revenues on the last year.
+    SalesOrder.joins(:sales_items, :clientship)
               .where.not(aasm_state: 0)
               .between(Date.today - 1.year, Date.today)
               .by_businesses(business_ids)
@@ -57,31 +58,25 @@ class Api::V1::BusinessesController < Api::V1::BaseController
               .where('clientships.business_id NOT IN (30, 36)')
               .group('clientships.business_id')
               .order('total_paid desc')
-              .limit(limit).map {|row| row.business_id }
+              .limit(limit).map do |row|
 
-    11.downto(0) do |month|
-      current_month = Date.today - month.months
-      amounts = []
-      businesses_ids.each do |business_id|
-        row = SalesOrder.joins(:sales_items, :clientship)
-                  .where.not(aasm_state: 0)
-                  .between(current_month - 30.days, current_month)
-                  .where('clientships.business_id = ?', business_id)
-                  .select('clientships.business_id,
-                           SUM(coalesce(sales_items.paid_price, 0)) AS total_paid,
-                           COUNT(coalesce(sales_items.id)) AS total_events')
-                  .where('clientships.business_id NOT IN (30, 36)')
-                  .group('clientships.business_id')
-                  .order('total_paid desc')
-                  .limit(limit)
-        amount = row.try(:total_paid) || 0
-        amounts << { "#{business_id}" => amount}
-      end
-      top << { month: current_month.month,
-        amounts: amounts
-      }
-    end
-    render json: { top: top }, status: :ok
+                  business = Business.find(row.business_id)
+                  business_amount = { business_id: business.id,
+                                      business_name: business.name,
+                                      amounts: []}
+
+                  # Load the revenue by month for the current business.
+                  SalesOrder.select('date_trunc(\'month\', sales_orders.consumed_on) AS "month", SUM(coalesce(sales_items.paid_price, 0)) AS total_paid')
+                    .joins(:sales_items, :clientship)
+                    .where.not(aasm_state: 0)
+                    .between(Date.today - 1.year, Date.today)
+                    .where('clientships.business_id = ?', business.id)
+                    .group('1').order('month asc').each do |r|
+                      business_amount[:amounts] << r.total_paid
+                    end
+                    amounts << business_amount
+              end
+      render json: { amounts: amounts }, status: :ok
   end
 
   def top_businesses
