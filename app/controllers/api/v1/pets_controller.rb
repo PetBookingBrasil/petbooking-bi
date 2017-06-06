@@ -18,26 +18,15 @@ class Api::V1::PetsController < Api::V1::BaseController
     render json: { pets: pets }, status: :ok
   end
 
-  def top_breeds_overall
-    top_breeds_overall_dog = Pet.by_businesses(business_ids)
-                                .by_kind('dog')
+  def top_breeds
+    top_breeds = Pet.by_businesses(business_ids)
+                                .by_kind(params[:pet_kind])
                                 .by_top_breed
-
-    top_breeds_overall_cat = Pet.by_businesses(business_ids)
-                                .by_kind('cat')
-                                .by_top_breed
-
-    top_breeds_overall = [
-      {label: 'Cachorros', value: top_breeds_overall_dog},
-      {label: 'gatos', value: top_breeds_overall_cat},
-    ]
-
-    render json: { top_breeds_overall: top_breeds_overall }, status: :ok
+    render json: { top_breeds_overall: {kind: params[:pet_kind],
+                   value: top_breeds} }, status: :ok
   end
 
   def top_breeds_current_month
-    date = Date.today - 1.day
-
     top_breeds_current_month = Pet.by_businesses(business_ids)
                                   .by_kind('dog')
                                   .by_top_breed
