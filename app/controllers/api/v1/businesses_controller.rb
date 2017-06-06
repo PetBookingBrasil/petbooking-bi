@@ -60,10 +60,10 @@ class Api::V1::BusinessesController < Api::V1::BaseController
               .order('total_paid desc')
               .limit(limit).map{|row| row.business_id}
 
-      12.times do |i| #12
+      11.downto(0) do |i| #12
         date = Date.today - (i+1).month
         # Starting the search for month
-        businesses_amounts = { month: "#{I18n.l(date, format: '%B')}" }
+        businesses_amounts = { month: "#{I18n.l(date, format: '%B/%Y')}" }
         businesses_ids.each_with_index do |business_id, index| #4
           #looking for amount for the current business and month
           business = Business.find(business_id)
