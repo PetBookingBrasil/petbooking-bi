@@ -58,23 +58,22 @@ class Api::V1::BusinessesController < Api::V1::BaseController
               .where('clientships.business_id NOT IN (30, 36)')
               .group('clientships.business_id')
               .order('total_paid desc')
-              .limit(limit).map do |row|
+              .limit(limit).each_with_index do |row, index|
 
                   business = Business.find(row.business_id)
                   business_amount = { business_id: business.id,
                                       business_name: business.name,
-                                      "#{business.id}" => []}
-
-                  # Load the revenue by month for the current business.
-                  SalesOrder.select('date_trunc(\'month\', sales_orders.consumed_on) AS "month", SUM(coalesce(sales_items.paid_price, 0)) AS total_paid')
-                    .joins(:sales_items, :clientship)
-                    .where.not(aasm_state: 0)
-                    .between(Date.today - 1.year, Date.today)
-                    .where('clientships.business_id = ?', business.id)
-                    .group('1').order('month asc').each do |r|
-                      business_amount["#{business.id}"] << r.total_paid
-                    end
-                    amounts << business_amount
+                                      "#{index}" => []}
+                  12.times do |i|
+                    date   = Date.today - (i+1).month
+                    amount = SalesOrder.joins(:clientship).where('clientships.business_id = ?', row.id)
+                                     .joins(:sales_items)
+                                     .paid
+                                     .between(date.beginning_of_month, date.end_of_month)
+                                     .sum('sales_items.unit_price').to_f
+                    business_amount["#{index}"] << { month: I18n.l(date, format: "%B"), amount: amount }
+                  end
+                  amounts << business_amount
               end
       render json: { amounts: amounts }, status: :ok
   end
