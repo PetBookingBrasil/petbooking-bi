@@ -19,9 +19,4 @@ class Pet < ApplicationRecord
     .order('breed_count desc')
     .limit(10)
   }
-
-  scope :by_current_month, -> {
-    joins(user: [:clientships])
-    .where('SalesOrders.between(date - 30.days, date)')
-  }
 end

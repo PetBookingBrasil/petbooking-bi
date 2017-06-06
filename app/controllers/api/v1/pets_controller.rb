@@ -40,7 +40,6 @@ class Api::V1::PetsController < Api::V1::BaseController
 
     top_breeds_current_month = Pet.by_businesses(business_ids)
                                   .by_kind('dog')
-                                  .by_current_month
                                   .by_top_breed
     render json: { top_breeds_current_month: top_breeds_current_month}, status: :ok
   end
