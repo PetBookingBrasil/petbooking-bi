@@ -63,7 +63,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                   business = Business.find(row.business_id)
                   business_amount = { business_id: business.id,
                                       business_name: business.name,
-                                      amounts: []}
+                                      "#{business.id}" => []}
 
                   # Load the revenue by month for the current business.
                   SalesOrder.select('date_trunc(\'month\', sales_orders.consumed_on) AS "month", SUM(coalesce(sales_items.paid_price, 0)) AS total_paid')
@@ -72,7 +72,7 @@ class Api::V1::BusinessesController < Api::V1::BaseController
                     .between(Date.today - 1.year, Date.today)
                     .where('clientships.business_id = ?', business.id)
                     .group('1').order('month asc').each do |r|
-                      business_amount[:amounts] << r.total_paid
+                      business_amount["#{business.id}"] << r.total_paid
                     end
                     amounts << business_amount
               end
