@@ -10,6 +10,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # We use SalesOrder because we want to calculate the real purchases
     # not the schedules that occur today
     today_online = SalesOrder.joins(:sales_items)
+                             .by_businesses(business_ids)
                              .online(true)
                              .where.not(aasm_state: 0)
                              .between(start_date, end_date)
@@ -19,6 +20,7 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # We use SalesOrder because we want to calculate the real purchases
     # not the schedules that occur in last 30 days
     average_online = SalesOrder.joins(:sales_items)
+                               .by_businesses(business_ids)
                                .online(true)
                                .where.not(aasm_state: 0)
                                .between(start_month, end_month)
@@ -27,7 +29,8 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Calculate the Budget for today offline sales
     # We use Timeslot because we want to calculate the real schedules
     # that occur today, not the real sales of day
-    today_offline = Timeslot.joins(:sales_item)
+    today_offline = Timeslot.by_businesses(business_ids)
+                            .joins(:sales_item)
                             .joins(sales_item: :sales_order)
                             .where('sales_orders.aasm_state != 0')
                             .where('sales_orders.online = FALSE')
@@ -37,7 +40,8 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     # Calculate the monthly average offline sales
     # We use Timeslot because we want to calculate the real schedules
     # that occur today, not the real sales of last 30 days
-    average_offline = Timeslot.joins(:sales_item)
+    average_offline = Timeslot.by_businesses(business_ids)
+                              .joins(:sales_item)
                               .joins(sales_item: :sales_order)
                               .where('sales_orders.aasm_state != 0')
                               .where('sales_orders.online = FALSE')
@@ -54,7 +58,8 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     end_month   = Date.today.end_of_month
 
     # Get the value for current month
-    current = SalesOrder.joins(:sales_items)
+    current = SalesOrder.by_businesses(business_ids)
+                        .joins(:sales_items)
                         .where.not(aasm_state: 0)
                         .online(true)
                         .between(start_month, end_month)
@@ -65,14 +70,16 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
       # index+1 prevents from getting the current month
       # Total sales online
       date  = Date.today - (index+1).month
-      online = SalesOrder.joins(:sales_items)
-                        .paid
-                        .online(true)
-                        .between(date.beginning_of_month, date.end_of_month)
-                        .sum('sales_items.unit_price').to_f
+      online = SalesOrder.by_businesses(business_ids)
+                         .joins(:sales_items)
+                         .paid
+                         .online(true)
+                         .between(date.beginning_of_month, date.end_of_month)
+                         .sum('sales_items.unit_price').to_f
 
       # Total sales offline
-      offline = SalesOrder.joins(:sales_items)
+      offline = SalesOrder.by_businesses(business_ids)
+                          .joins(:sales_items)
                           .where.not(aasm_state: 0)
                           .online(false)
                           .between(date.beginning_of_month, date.end_of_month)
@@ -91,14 +98,16 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     end_month   = (Date.today - 1.day)
     top_10_amount = 0
     # Calculate the total amount paid for services
-    total_in_services = SalesOrder.joins(:sales_items)
+    total_in_services = SalesOrder.by_businesses(business_ids)
+                                  .joins(:sales_items)
                                   .where.not(aasm_state: 0)
                                   .between(start_month, end_month)
                                   .online(true)
                                   .sum('sales_items.unit_price').to_f
 
     # Now calculate the Top 10
-    SalesOrder.joins(:sales_items)
+    SalesOrder.by_businesses(business_ids)
+              .joins(:sales_items)
               .online(true)
               .where.not(aasm_state: 0)
               .between(start_month, end_month)
@@ -124,14 +133,16 @@ class Api::V1::SalesOrdersController < Api::V1::BaseController
     end_month   = (Date.today - 1.day)
     top_10_amount = 0
     # Calculate the total amount paid for services
-    total_in_services = SalesOrder.joins(:sales_items)
-                        .where.not(aasm_state: 0)
-                        .between(start_month, end_month)
-                        .online(false)
-                        .sum('sales_items.unit_price').to_f
+    total_in_services = SalesOrder.by_businesses(business_ids)
+                                  .joins(:sales_items)
+                                  .where.not(aasm_state: 0)
+                                  .between(start_month, end_month)
+                                  .online(false)
+                                  .sum('sales_items.unit_price').to_f
 
     # Now calculate the Top 10
-    SalesOrder.joins(:sales_items)
+    SalesOrder.by_businesses(business_ids)
+              .joins(:sales_items)
               .online(false)
               .where.not(aasm_state: 0)
               .between(start_month, end_month)

@@ -10,6 +10,14 @@ class Api::V1::BaseController < ActionController::API
     render json: { message: 'You Are authenticated!' }, status: :ok
   end
 
+  # Look for a business by business_id, received on URL, and returns the ids of childs
+  def business_ids
+    @business ||= Business.find(params[:business_id])
+    @business.descendant_ids.push(@business.id) if @business
+  rescue
+    []
+  end
+
   protected
 
   def authenticate

@@ -15,34 +15,45 @@ Rails.application.routes.draw do
 
       resources :businesses do
         collection do
-          get 'top_businesses'
+          get 'top_businesses(/:limit)(/:business_id)',to: 'businesses#top_businesses'
           get 'sign_up_progress'
           get 'total_last_semester'
           get 'active_current_month'
           get 'schedulable_current_month'
+          get 'total_business_clients(/:business_id)', to:'businesses#total_business_clients'
+          get 'top_businesses_last_year(/:business_id/:limit)', to:'businesses#top_businesses_last_year'
         end
       end
 
       resources :events do
         collection do
-          get 'today_and_average'
-          get 'total_last_semester'
+          get 'today_and_average(/:business_id)', to: 'events#today_and_average'
+          get 'total_last_semester(/:business_id)', to: 'events#total_last_semester'
         end
       end
 
       resources :sales_orders, path: 'sales' do
         collection do
-          get 'today'
+          get 'today(/:business_id)', to: 'sales_orders#today'
           get 'by_week_days'
-          get 'total_last_year'
-          get 'top_online_services'
-          get 'top_offline_services'
+          get 'total_last_year(/:business_id)', to: 'sales_orders#total_last_year'
+          get 'top_online_services(/:business_id)', to: 'sales_orders#top_online_services'
+          get 'top_offline_services(/:business_id)', to: 'sales_orders#top_offline_services'
         end
       end
 
       resources :employments do
         collection do
-          get 'top_three_employees'
+          get 'top_three_employees(/:business_id)', to: 'employments#top_employees'
+          get 'top_employees(/:business_id)', to: 'employments#top_employees'
+        end
+      end
+
+      resources :pets do
+        collection do
+          get 'total_pets(/:business_id)', to: 'pets#total_pets'
+          get 'top_breeds(/:business_id/:pet_kind)', to: 'pets#top_breeds'
+          get 'top_breeds_current_month(/:business_id)', to: 'pets#top_breeds_current_month'
         end
       end
     end

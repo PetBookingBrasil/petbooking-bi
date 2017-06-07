@@ -2,6 +2,7 @@ class Business < ApplicationRecord
   has_many :employments
   has_many :clientships
   has_many :reviews, through: :clientships
+  has_ancestry
 
   AASM_STATES = {
     disabled: 0, wizard_0: 1, wizard_1: 2, wizard_2: 3, wizard_3: 4, wizard_4: 5,
@@ -23,4 +24,9 @@ class Business < ApplicationRecord
   scope :by_step, -> (step) {
     where(aasm_state: step)
   }
+
+  #scope :by_businesses, -> (business_ids){
+  #  joins(:clientships)
+  #  .where('clientships.business_id IN (?)', business_ids) unless business_ids.empty?
+  #}
 end
