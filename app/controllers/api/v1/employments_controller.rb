@@ -15,7 +15,7 @@ class Api::V1::EmploymentsController < Api::V1::BaseController
              .between(start_date, end_date)
              .group('employment_id')
              .order('total_paid DESC')
-             .limit(10).each do |row|
+             .limit(100).each do |row|
                 next if row.employment.blank?
                 employees << {
                   name: row.employment.name,
