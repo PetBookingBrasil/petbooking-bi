@@ -20,8 +20,8 @@ class Api::V1::PetsController < Api::V1::BaseController
 
   def top_breeds
     top_breeds = Pet.by_businesses(business_ids)
-                                .by_kind(params[:pet_kind])
-                                .by_top_breed
+                    .by_kind(params[:pet_kind])
+                    .by_top_breed
     render json: { top_breeds_overall: {kind: params[:pet_kind],
                    value: top_breeds} }, status: :ok
   end

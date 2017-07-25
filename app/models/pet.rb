@@ -17,6 +17,6 @@ class Pet < ApplicationRecord
     .group('breeds.id')
     .select('breeds.id, breeds.name, count(breeds.id) as breed_count')
     .order('breed_count desc')
-    .limit(10)
+    .limit(200)
   }
 end
